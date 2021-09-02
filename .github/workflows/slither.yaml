@@ -4,10 +4,12 @@ on:
     branches: [ main ]
     paths:
       - 'contracts/**'
+      - '.github/workflows/slither.yaml'
   pull_request:
     branches: [ main ]
     paths:
       - 'contracts/**'
+      - '.github/workflows/slither.yaml'
 
 jobs:
   build:
@@ -25,7 +27,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          snap install solc
+          sudo snap install solc
           python -m pip install --upgrade pip
           pip3 install solc-select
           solc-select use 0.8.0

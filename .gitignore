@@ -111,3 +111,5 @@ artifacts
 typechain/
 
 coverage*
+
+env/

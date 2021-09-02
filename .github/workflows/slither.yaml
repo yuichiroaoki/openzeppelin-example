@@ -1,0 +1,35 @@
+name: Static Analysis
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'contracts/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'contracts/**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          snap install solc
+          python -m pip install --upgrade pip
+          pip3 install solc-select
+          solc-select use 0.8.0
+      - name: Test with slither
+        run: |
+          slither .

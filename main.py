@@ -20,16 +20,20 @@ async def send_notification(filename: str, background_tasks: BackgroundTasks):
     return {"message": "Command sent in the background"}
 
 
-@app.get("/data/{filename}/json")
-def view_data(filename: str):
-    with open(f'data/{filename}.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-        return data 
-
 def save_json(filename: str):
     result = subprocess.run(['slither', '.', '--print', 'human-summary', '--json', f'data/{filename}.json'], stdout=subprocess.PIPE)
     output = result.stdout.decode('utf-8')
     print(output)
 
+@app.get("/data/{filename}/json")
+def view_data(filename: str, description: Optional[bool] = False, other: Optional[str] = None):
+    with open(f'data/{filename}.json', 'r', encoding='utf-8') as f:
+        raw_json_data = json.load(f)
+        printers = raw_json_data['results']['printers'][0]
+        if description:
+            return printers['description']
+        if other:
+            return printers['additional_fields'][other]
+        return printers 
 
 # breakpoint()

@@ -19,36 +19,40 @@ def read_root():
 
 @app.get("/human-summary/{username}")
 async def send_notification(username: str, background_tasks: BackgroundTasks):
-    background_tasks.add_task(save_json, username)
+    background_tasks.add_task(security_check, username)
     return {"message": "Running slither in the background"}
 
+def security_check(username):
+    data = run_slither()
+    if data:
+        save_data(data, username)
 
-def save_json(username: str):
+def run_slither():
     result = subprocess.run(['slither', '.', '--print', 'human-summary', '--json', '-'], stdout=subprocess.PIPE)
     
     if result.returncode != 0:
         logger.error(result.stderr)
     else:
         data = json.loads(result.stdout)
-        if not data['success']:
-            logger.error(data['error'])
-        else:
-            with open(f"data/{username}.json", "w", encoding="utf-8") as f:
-                json.dump(data['results']['printers'][0], f)
+        return data
 
-            logger.debug("data saved successfully")
+def save_data(data, username: str):
 
-    
+    if not data['success']:
+        logger.error(data['error'])
+    else:
+        with open(f"data/{username}.json", "w", encoding="utf-8") as f:
+            json.dump(data['results']['printers'][0], f)
 
-@app.get("/data/{filename}/json")
-def view_data(filename: str, description: Optional[bool] = False, other: Optional[str] = None):
-    with open(f'data/{filename}.json', 'r', encoding='utf-8') as f:
-        raw_json_data = json.load(f)
-        printers = raw_json_data['results']['printers'][0]
+        logger.debug("data saved successfully")
+
+
+@app.get("/data/{username}/json")
+def view_data(username: str, description: Optional[bool] = False, other: Optional[str] = None):
+    with open(f'data/{username}.json', 'r', encoding='utf-8') as f:
+        printers = json.load(f)
         if description:
             return printers['description']
         if other:
             return printers['additional_fields'][other]
         return printers 
-
-# breakpoint()

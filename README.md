@@ -34,3 +34,10 @@ Show an account's balance
 
 ## References
 https://hardhat.org/guides/create-task.html
+
+## Run fastapi
+```console
+chmod +x startup.sh
+./startup.sh
+uvicorn main:app --reload
+```

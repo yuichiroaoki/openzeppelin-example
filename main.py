@@ -6,33 +6,41 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import os
+from dotenv import load_dotenv
+
+load_dotenv() 
+
+app = FastAPI()
 
 project_id = os.getenv('project_id')
+service_account_path = os.getenv('service_account_path')
 
-# Use the application default credentials
-cred = credentials.ApplicationDefault()
+cred = credentials.Certificate(service_account_path)
 firebase_admin.initialize_app(cred, {
-  'projectId': project_id,
+'projectId': project_id,
 })
 
 db = firestore.client()
-app = FastAPI()
-
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
-@app.get("/human-summary/{filename}")
-async def send_notification(filename: str, background_tasks: BackgroundTasks):
-    background_tasks.add_task(save_json, filename)
+@app.get("/human-summary/{username}")
+async def send_notification(username: str, background_tasks: BackgroundTasks):
+    background_tasks.add_task(save_json, username)
     return {"message": "Running slither in the background"}
 
 
-def save_json(filename: str):
-    result = subprocess.run(['slither', '.', '--print', 'human-summary', '--json', f'data/{filename}.json'], stdout=subprocess.PIPE)
-    output = result.stdout.decode('utf-8')
-    print(output)
+def save_json(username: str):
+    result = subprocess.run(['slither', '.', '--print', 'human-summary', '--json', '-'], stdout=subprocess.PIPE)
+    output = json.loads(result.stdout)['results']['printers'][0]
+    # output = result.stdout.decode('utf-8')
+    doc_ref = db.collection(u'result').document(username)
+    doc_ref.set(output)
+
+# def format_data(output):
+    
 
 @app.get("/data/{filename}/json")
 def view_data(filename: str, description: Optional[bool] = False, other: Optional[str] = None):

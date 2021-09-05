@@ -2,7 +2,20 @@ import subprocess
 from typing import Optional
 import json
 from fastapi import FastAPI, BackgroundTasks
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+import os
 
+project_id = os.getenv('project_id')
+
+# Use the application default credentials
+cred = credentials.ApplicationDefault()
+firebase_admin.initialize_app(cred, {
+  'projectId': project_id,
+})
+
+db = firestore.client()
 app = FastAPI()
 
 
@@ -10,14 +23,10 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
-
 @app.get("/human-summary/{filename}")
 async def send_notification(filename: str, background_tasks: BackgroundTasks):
     background_tasks.add_task(save_json, filename)
-    return {"message": "Command sent in the background"}
+    return {"message": "Running slither in the background"}
 
 
 def save_json(filename: str):

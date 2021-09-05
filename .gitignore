@@ -113,3 +113,5 @@ typechain/
 coverage*
 
 env/
+data/
+__pycache__

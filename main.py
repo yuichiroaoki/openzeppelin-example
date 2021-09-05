@@ -2,25 +2,16 @@ import subprocess
 from typing import Optional
 import json
 from fastapi import FastAPI, BackgroundTasks
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
-import os
-from dotenv import load_dotenv
+from logging import getLogger, StreamHandler, DEBUG
 
-load_dotenv() 
+logger = getLogger(__name__)
+handler = StreamHandler()
+handler.setLevel(DEBUG)
+logger.setLevel(DEBUG)
+logger.addHandler(handler)
+logger.propagate = False
 
 app = FastAPI()
-
-project_id = os.getenv('project_id')
-service_account_path = os.getenv('service_account_path')
-
-cred = credentials.Certificate(service_account_path)
-firebase_admin.initialize_app(cred, {
-'projectId': project_id,
-})
-
-db = firestore.client()
 
 @app.get("/")
 def read_root():
@@ -34,12 +25,19 @@ async def send_notification(username: str, background_tasks: BackgroundTasks):
 
 def save_json(username: str):
     result = subprocess.run(['slither', '.', '--print', 'human-summary', '--json', '-'], stdout=subprocess.PIPE)
-    output = json.loads(result.stdout)['results']['printers'][0]
-    # output = result.stdout.decode('utf-8')
-    doc_ref = db.collection(u'result').document(username)
-    doc_ref.set(output)
+    
+    if result.returncode != 0:
+        logger.error(result.stderr)
+    else:
+        data = json.loads(result.stdout)
+        if not data['success']:
+            logger.error(data['error'])
+        else:
+            with open(f"data/{username}.json", "w", encoding="utf-8") as f:
+                json.dump(data['results']['printers'][0], f)
 
-# def format_data(output):
+            logger.debug("data saved successfully")
+
     
 
 @app.get("/data/{filename}/json")

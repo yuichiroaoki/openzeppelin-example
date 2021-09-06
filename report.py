@@ -33,3 +33,5 @@ def save_data(data, username: str):
             json.dump(data['results']['printers'][0], f)
 
         logger.debug("data saved successfully")
+
+security_check("sample")

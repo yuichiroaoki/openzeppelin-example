@@ -44,3 +44,7 @@ jobs:
       run: |
         echo "running slither"
         python report.py
+    - uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: data/sample.json

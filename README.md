@@ -41,3 +41,6 @@ chmod +x startup.sh
 ./startup.sh
 uvicorn main:app --reload
 ```
+
+## upload to cloud storage
+https://github.com/google-github-actions/upload-cloud-storage

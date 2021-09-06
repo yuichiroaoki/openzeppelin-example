@@ -1,3 +1,4 @@
+from files import create_folder_if_not_exist
 import subprocess
 from logging import getLogger, StreamHandler, DEBUG
 import json
@@ -10,25 +11,30 @@ logger.setLevel(DEBUG)
 logger.addHandler(handler)
 logger.propagate = False
 
+
 def security_check(username):
     data = run_slither()
     if data:
         save_data(data, username)
 
+
 def run_slither():
-    result = subprocess.run(['slither', '.', '--print', 'human-summary', '--json', '-'], stdout=subprocess.PIPE)
-    
+    result = subprocess.run(
+        ['slither', '.', '--print', 'human-summary', '--json', '-'], stdout=subprocess.PIPE)
+
     if result.returncode != 0:
         logger.error(result.stderr)
     else:
         data = json.loads(result.stdout)
         return data
 
+
 def save_data(data, username: str):
 
     if not data['success']:
         logger.error(data['error'])
     else:
+        create_folder_if_not_exist(".", "data")
         with open(f"data/{username}.json", "w", encoding="utf-8") as f:
             json.dump(data['results']['printers'][0], f)
 

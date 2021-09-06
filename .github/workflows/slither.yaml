@@ -5,6 +5,7 @@ on:
     paths:
       - 'contracts/**'
       - '.github/workflows/slither.yaml'
+      - "**.py"
   pull_request:
     branches: [ main ]
     paths:
@@ -42,7 +43,7 @@ jobs:
         solc-select use 0.8.0
     - name: Test with slither
       run: |
-        echo "running slither"
+        echo "Running slither"
         python report.py
     - uses: actions/upload-artifact@v2
       with:

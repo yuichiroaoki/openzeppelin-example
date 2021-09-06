@@ -34,4 +34,5 @@ def save_data(data, username: str):
 
         logger.debug("data saved successfully")
 
-security_check("sample")
+data = run_slither()
+print(data['success'])

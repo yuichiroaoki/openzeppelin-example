@@ -42,4 +42,5 @@ jobs:
         solc-select use 0.8.0
     - name: Test with slither
       run: |
+        echo "running slither"
         python report.py

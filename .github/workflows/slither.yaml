@@ -55,6 +55,9 @@ jobs:
       - name: Data dependency
         run: |
           slither . --print data-dependency
+      - name: Inheritance
+        run: |
+          slither . --print inheritance
       # python report.py
       # - id: upload-file
       #   uses: google-github-actions/upload-cloud-storage@main

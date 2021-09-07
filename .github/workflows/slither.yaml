@@ -49,9 +49,11 @@ jobs:
         run: |
           echo "Running slither"
           slither . --print contract-summary
+      - name: Function summary
+        run: |
+          slither . --print function-summary
       - name: Data dependency
         run: |
-          echo "Running slither"
           slither . --print data-dependency
       # python report.py
       # - id: upload-file

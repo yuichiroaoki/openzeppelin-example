@@ -44,10 +44,12 @@ jobs:
       - name: Test with slither
         run: |
           echo "Running slither"
-          python report.py
-      - id: upload-file
-        uses: google-github-actions/upload-cloud-storage@main
-        with:
-          credentials: ${{ secrets.gcp_credentials }}
-          path: data/sample.json
-          destination: ${{ secrets.BUCKET_NAME }}/security/sample.json
+          slither . --print human-summary
+
+      # python report.py
+      # - id: upload-file
+      #   uses: google-github-actions/upload-cloud-storage@main
+      #   with:
+      #     credentials: ${{ secrets.gcp_credentials }}
+      #     path: data/sample.json
+      #     destination: ${{ secrets.BUCKET_NAME }}/security

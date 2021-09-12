@@ -63,7 +63,7 @@ jobs:
       - uses: github/codeql-action/upload-sarif@v1
         with:
           # Path to SARIF file relative to the root of the repository
-          sarif_file: data/results.sarif
+          sarif_file: data/test.sarif
 
       # - id: upload-file
       #   uses: google-github-actions/upload-cloud-storage@main

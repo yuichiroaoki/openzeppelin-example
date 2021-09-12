@@ -12,7 +12,7 @@ logger.addHandler(handler)
 logger.propagate = False
 
 
-FILENAME = 'results.sarif'
+FILENAME = 'test.sarif'
 
 def security_check(username):
     data = run_slither()
@@ -22,8 +22,9 @@ def security_check(username):
 
 def run_slither():
     result = subprocess.run(
-        ['slither', '.','--json', '-', '--sarif', FILENAME], stdout=subprocess.PIPE)
-        # ['slither', '.', '--print', 'human-summary', '--json', '-'], stdout=subprocess.PIPE)
+        # ['slither', '.', '--sarif', '-'], stdout=subprocess.PIPE)
+        ['slither', '.', '--print', 'human-summary', '--json', '-'], stdout=subprocess.PIPE)
+
 
     if result.returncode != 0:
         logger.error(result.stderr)
@@ -43,5 +44,14 @@ def save_data(data, filename: str):
 
         logger.debug("data saved successfully")
 
+
+def save_sarif(data, filename: str):
+
+    create_folder_if_not_exist(".", "data")
+    with open(f"data/{filename}", "w", encoding="utf-8") as f:
+        json.dump(data, f)
+
+    logger.debug("data saved successfully")
+
 data = run_slither()
-save_data(data, FILENAME)
+save_sarif(data, FILENAME)

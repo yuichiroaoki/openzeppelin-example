@@ -58,16 +58,16 @@ jobs:
           slither . --print inheritance
       - name: Save the result as a SARIF json file
         run: |
-          slither . --sarif results.sarif
+          slither . --json - --sarif results.sarif
       - uses: github/codeql-action/upload-sarif@v1
         with:
           # Path to SARIF file relative to the root of the repository
-          sarif_file: results.sarif
+          sarif_file: data/results.sarif
 
       # python report.py
-      - id: upload-file
-        uses: google-github-actions/upload-cloud-storage@main
-        with:
-          credentials: ${{ secrets.gcp_credentials }}
-          path: results.sarif
-          destination: ${{ secrets.BUCKET_NAME }}/security
+      # - id: upload-file
+      #   uses: google-github-actions/upload-cloud-storage@main
+      #   with:
+      #     credentials: ${{ secrets.gcp_credentials }}
+      #     path: results.sarif
+      #     destination: ${{ secrets.BUCKET_NAME }}/security

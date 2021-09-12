@@ -64,7 +64,7 @@ jobs:
           # Path to SARIF file relative to the root of the repository
           sarif_file: results.sarif
 
-      python report.py
+      # python report.py
       - id: upload-file
         uses: google-github-actions/upload-cloud-storage@main
         with:

@@ -12,6 +12,8 @@ logger.addHandler(handler)
 logger.propagate = False
 
 
+FILENAME = 'results.sarif'
+
 def security_check(username):
     data = run_slither()
     if data:
@@ -20,7 +22,8 @@ def security_check(username):
 
 def run_slither():
     result = subprocess.run(
-        ['slither', '.', '--print', 'human-summary', '--json', '-'], stdout=subprocess.PIPE)
+        ['slither', '.','--json', '-', '--sarif', FILENAME], stdout=subprocess.PIPE)
+        # ['slither', '.', '--print', 'human-summary', '--json', '-'], stdout=subprocess.PIPE)
 
     if result.returncode != 0:
         logger.error(result.stderr)
@@ -29,16 +32,16 @@ def run_slither():
         return data
 
 
-def save_data(data, username: str):
+def save_data(data, filename: str):
 
     if not data['success']:
         logger.error(data['error'])
     else:
         create_folder_if_not_exist(".", "data")
-        with open(f"data/{username}.json", "w", encoding="utf-8") as f:
+        with open(f"data/{filename}", "w", encoding="utf-8") as f:
             json.dump(data['results']['printers'][0], f)
 
         logger.debug("data saved successfully")
 
 data = run_slither()
-save_data(data, "sample")
+save_data(data, FILENAME)

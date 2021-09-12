@@ -57,14 +57,14 @@ jobs:
         run: |
           slither . --print inheritance
       - name: Save the result as a SARIF json file
+            #  slither . --json - --sarif results.sarif
         run: |
-          slither . --json - --sarif results.sarif
+            python report.py
       - uses: github/codeql-action/upload-sarif@v1
         with:
           # Path to SARIF file relative to the root of the repository
           sarif_file: data/results.sarif
 
-      # python report.py
       # - id: upload-file
       #   uses: google-github-actions/upload-cloud-storage@main
       #   with:

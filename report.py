@@ -23,7 +23,7 @@ def security_check(username):
 def run_slither():
     result = subprocess.run(
         # ['slither', '.', '--sarif', '-'], stdout=subprocess.PIPE)
-        ['slither', '.', '--print', 'human-summary', '--json', '-'], stdout=subprocess.PIPE)
+        ['slither', '.', '--sarif', '-'], stdout=subprocess.PIPE)
 
 
     if result.returncode != 0:

@@ -6,11 +6,11 @@ on:
       - 'contracts/**'
       - '.github/workflows/slither.yaml'
       - "**.py"
-  #pull_request:
-    #branches: [ main ]
-    #paths:
-      #- 'contracts/**'
-      #- '.github/workflows/slither.yaml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'contracts/**'
+      - '.github/workflows/slither.yaml'
 
 jobs:
   build:

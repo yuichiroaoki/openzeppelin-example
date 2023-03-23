@@ -1,0 +1,51 @@
+# Slither CI Action v1.2.1
+name: slither
+on:
+  push:
+    paths:
+      - "**.sol"
+      - ".github/workflows/slither.yml"
+jobs:
+  slither:
+    runs-on: ubuntu-latest
+
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["14.x"]
+        os: ["ubuntu-latest"]
+
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Nodejs 14.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+          check-latest: true
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+
+      - name: Install Slither
+        run: pip3 install slither-analyzer
+      - name: Prepare output
+        run: |
+          mkdir -p .github/slither-output
+
+        uses: actions/upload-artifact@v2
+        with:
+          name: slither-report
+          path: .github/slither-output/slither_report.txt
+      - name: Check status
+        id: coverage:status 
+        shell: bash
+        run: |
+          FALSE_POSITIVE_WARNINGS=7
+          FOUND_WARNINGS=`grep "\d+ result" -Po .github/slither-output/slither_report.txt | sed 's/ result//g'`
+          echo "Slither Analysis $FOUND_WARNINGS issues"
+          if [[ $FOUND_WARNINGS -gt $FALSE_POSITIVE_WARNINGS ]]; then echo "$FOUND_WARNINGS issues exceeds limit" >&2; exit 1; fi

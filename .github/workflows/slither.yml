@@ -25,12 +25,6 @@ jobs:
           node-version: "14.x"
           check-latest: true
 
-
-      - name: Install Hardhat
-        id: compile:contracts
-        run: |
-          npm ci
-          npx hardhat compile
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
